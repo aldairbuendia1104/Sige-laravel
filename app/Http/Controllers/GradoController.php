@@ -8,58 +8,92 @@ use Illuminate\Http\Request;
 class GradoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar todos los grados.
      */
     public function index()
     {
-        //
+        $grados = Grado::orderBy('orden')->get();
+
+        return view('grados.index', compact('grados'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostrar formulario para crear un grado.
      */
     public function create()
     {
-        //
+        return view('grados.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guardar un nuevo grado.
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:20|unique:grados,nombre',
+            'orden' => 'required|integer|min:1|unique:grados,orden',
+            'descripcion' => 'nullable|string',
+        ]);
+
+        Grado::create([
+            'nombre' => $request->nombre,
+            'orden' => $request->orden,
+            'descripcion' => $request->descripcion,
+        ]);
+
+        return redirect()
+            ->route('grados.index')
+            ->with('success', 'Grado creado correctamente.');
     }
 
     /**
-     * Display the specified resource.
+     * Mostrar un grado.
      */
     public function show(Grado $grado)
     {
-        //
+        return view('grados.show', compact('grado'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Mostrar formulario para editar.
      */
     public function edit(Grado $grado)
     {
-        //
+        return view('grados.edit', compact('grado'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar un grado.
      */
     public function update(Request $request, Grado $grado)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:20|unique:grados,nombre,' . $grado->id,
+            'orden' => 'required|integer|min:1|unique:grados,orden,' . $grado->id,
+            'descripcion' => 'nullable|string',
+        ]);
+
+        $grado->update([
+            'nombre' => $request->nombre,
+            'orden' => $request->orden,
+            'descripcion' => $request->descripcion,
+        ]);
+
+        return redirect()
+            ->route('grados.index')
+            ->with('success', 'Grado actualizado correctamente.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar un grado.
      */
     public function destroy(Grado $grado)
     {
-        //
+        $grado->delete();
+
+        return redirect()
+            ->route('grados.index')
+            ->with('success', 'Grado eliminado correctamente.');
     }
 }

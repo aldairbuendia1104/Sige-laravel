@@ -5,18 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Grado extends Model
+class Tutor extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'nombre',
-        'orden',
-        'descripcion',
+        'user_id',
+        'ocupacion',
+        'parentesco_principal',
     ];
 
-    public function grupos()
+    public function usuario()
     {
-        return $this->hasMany(Grupo::class);
+        return $this->belongsTo(User::class);
     }
 }
